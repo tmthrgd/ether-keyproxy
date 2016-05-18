@@ -243,10 +243,6 @@ func main() {
 		panic(err)
 	}
 
-	if len(body.Default) != nameLen {
-		panic("invalid default key size")
-	}
-
 	keyNames := make([][nameLen]byte, len(body.Keys))
 	for i, key := range body.Keys {
 		copy(keyNames[i][:], key[:nameLen])
@@ -258,17 +254,23 @@ func main() {
 	Total Keys: %d
 `, eventKeyPrefix, retrieveKeysQuery, resp.From, body.Default, keyNames, len(body.Keys))
 
-	defaultKey = nil
+	switch len(body.Default) {
+	case nameLen:
+		defaultKey = nil
 
-	for _, key := range body.Keys {
-		if bytes.Equal(key[:nameLen], body.Default) {
-			defaultKey = &key
-			break
+		for _, key := range body.Keys {
+			if bytes.Equal(key[:nameLen], body.Default) {
+				defaultKey = &key
+				break
+			}
 		}
-	}
 
-	if defaultKey == nil {
-		log.Printf("Query '%s%s' dispatched\n", eventKeyPrefix, retrieveKeysQuery)
+		if defaultKey == nil {
+			log.Println("cannot set default key %x", body.Default)
+		}
+	case 0:
+	default:
+		panic("invalid default key size")
 	}
 
 	keys = body.Keys
