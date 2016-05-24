@@ -131,7 +131,7 @@ func main() {
 				keysMut.Lock()
 				for _, key := range keys {
 					if bytes.Equal(key[:nameLen], payload[:nameLen]) {
-						log.Println("already have key %x", payload[:nameLen])
+						log.Printf("already have key %x", payload[:nameLen])
 
 						keysMut.Unlock()
 						continue evLoop
@@ -164,7 +164,7 @@ func main() {
 					}
 				}
 
-				log.Println("cannot remove key %x", payload[:nameLen])
+				log.Printf("cannot remove key %x", payload[:nameLen])
 				keysMut.Unlock()
 			case setDefaultKeyEvent:
 				if len(payload) != nameLen {
@@ -184,13 +184,13 @@ func main() {
 				}
 
 				if defaultKey == nil {
-					log.Println("cannot set default key %x", payload[:nameLen])
+					log.Printf("cannot set default key %x", payload[:nameLen])
 				}
 
 				keysMut.Unlock()
 			case wipeKeysEvent:
 				if len(payload) != 0 {
-					log.Println("invalid %s event payload", eventKeyPrefix+wipeKeysEvent)
+					log.Printf("invalid %s event payload", eventKeyPrefix+wipeKeysEvent)
 				}
 
 				log.Println(name)
@@ -266,7 +266,7 @@ func main() {
 		}
 
 		if defaultKey == nil {
-			log.Println("cannot set default key %x", body.Default)
+			log.Printf("cannot set default key %x", body.Default)
 		}
 	case 0:
 	default:
