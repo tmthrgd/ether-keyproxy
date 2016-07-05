@@ -151,7 +151,7 @@ func main() {
 				for i, key := range keys {
 					if bytes.Equal(key[:nameLen], payload) {
 						// zero old key
-						for i := 0; i < len(key); i++ {
+						for i := range key {
 							key[i] = 0
 						}
 
@@ -198,7 +198,7 @@ func main() {
 				keysMut.Lock()
 				for _, key := range keys {
 					// zero old key
-					for i := 0; i < len(key); i++ {
+					for i := range key {
 						key[i] = 0
 					}
 				}
